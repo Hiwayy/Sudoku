@@ -19,7 +19,11 @@ import javax.swing.SwingConstants;
 
 
 public class Sudoku implements KeyListener {						// Définition de la classe Sudoku qui implémente l'interface KeyListener
-    public static JFrame f = new JFrame("Sudoku");					// Création d'une fenêtre avec le titre "Sudoku"
+ /*TEST*/
+	private int erreurRestantes;
+	private int difficulte;
+/*FIN TEST*/
+	public static JFrame f = new JFrame("Sudoku");					// Création d'une fenêtre avec le titre "Sudoku"
     public static JPanel p = new JPanel();							// Création d'un panneau
     public static JTextField[][] M = new JTextField[9][9];			// Création d'un tableau de 9x9 pour les cellules du sudoku
     public static JTextField[][] CopieM = new JTextField[9][9];		// Création d'une copie du tableau de 9x9 pour une copie du sudoku
@@ -245,7 +249,59 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
          }
          return true;																				// si toutes les cases sont égales, retourner true
      }
-    Sudoku(){
+     
+/*TEST*/
+     
+     
+    public void reinitialiseJeu() {
+    	for (int i = 0; i < 9; i++) {
+    		for (int j = 0; j < 9; j++) {
+    			M[i][j].setText("");
+    			M[i][j].setForeground(Color.black);
+    			M[i][j].setEditable(true);
+    		}
+    	}
+    	
+    	
+    	//générer la grille avec la difficulté enregistrée
+    	if (difficulte == 1 ) {
+    	     colorier(M);
+    	     generer(M,10,3);
+    	     
+    	     difficulte = 1;
+    	     erreurRestantes = 5;
+    	}
+    	else if (difficulte == 2) {
+    	     colorier(M);
+    	     generer(M,15,5);
+    	     
+    	     difficulte = 2;
+    	     erreurRestantes = 10;
+    	}
+    	else {
+    	     colorier(M);
+    	     generer(M,40,15);
+    	     
+    	     difficulte = 3;
+    	     erreurRestantes = 20;
+    	}
+    		
+    } 
+    public void recommencer() {
+    	for (int i = 0; i < 9; i++) {
+    		for (int j = 0; j < 9; j++) {
+    			if (CopieM[i][j].getText().equals("")) {
+    				M[i][j].setText("");
+        			M[i][j].setForeground(Color.black);
+        			M[i][j].setEditable(true);
+    			}
+    		}
+    	}
+    	
+    }
+    
+/*TEST_FIN*/     
+    Sudoku(){	
       f.setSize(600,600);												//Creation de la fenetre princiaple
       menu.add(n1);menu.add(n2);menu.add(n3);							 // Création du menu et des options de difficulté
       mb.add(menu);
@@ -277,6 +333,9 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
     public void actionPerformed(ActionEvent e) {
      colorier(M);
      generer(M,10,3);
+     
+     difficulte = 1;
+     erreurRestantes = 5;	
       
     }   
     });
@@ -285,7 +344,10 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
      @Override
     public void actionPerformed(ActionEvent e) {
      colorier(M);
-     generer(M,15,5);  
+     generer(M,15,5);
+     
+     difficulte = 2;
+     erreurRestantes = 10;
     }   
     });
       
@@ -293,7 +355,10 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
      @Override
     public void actionPerformed(ActionEvent e) {
      colorier(M);
-     generer(M,40,15);  
+     generer(M,40,15);
+     
+     difficulte = 3;
+     erreurRestantes = 20;
     }   
     });
     }
@@ -327,8 +392,8 @@ new Sudoku();								    // création d'une nouvelle instance de la classe Sudok
               (!text.equals("9")))
           tf.setText("");
       for (int i=0; i<M.length;i++)																		  // On parcourt la grille M pour valider les chiffres saisis par l'utilisateur
-          for (int j=0; j<M[i].length;j++){
-           if(M[i][j]==tf ||M[i][j].equals(tf)){
+          for (int j=0; j<M[i].length;j++){	  
+        	  if(M[i][j]==tf ||M[i][j].equals(tf)){
                try{																	 // On vérifie si la ligne, la colonne et le carré 3x3 sont corrects
                    ValiderLigne(M,CopieM,i);
                    ValiderColonne(M,CopieM,j);
@@ -337,12 +402,47 @@ new Sudoku();								    // création d'une nouvelle instance de la classe Sudok
                v1=Integer.parseInt(CopieM[i][j].getText());} 
                catch(NumberFormatException nfe){}
                if(v!=v1) M[i][j].setForeground(Color.red);								// Si la valeur est différente de la valeur initiale, on change la couleur du champ en rouge
+         /*TEST*/
+               if(v != v1) {
+            	    M[i][j].setForeground(Color.red);
+            	    erreurRestantes--;
+            	    if (erreurRestantes <= 0) {
+            	        int choix = JOptionPane.showOptionDialog(f, "Désolé, vous avez atteint le nombre maximum d'erreurs autorisées. Voulez-vous recommencer ou réinitialiser le jeu ?", "Fin du jeu", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Recommencer", "Réinitialiser"}, null);
+
+            	        if (choix == JOptionPane.YES_OPTION) {
+            	            recommencer();
+            	            // Réinitialisez le compteur d'erreurs pour le niveau actuel
+            	            switch (difficulte) {
+            	                case 1:
+            	                    erreurRestantes = 20; // Facile
+            	                    break;
+            	                case 2:
+            	                    erreurRestantes = 10; // Moyen
+            	                    break;
+            	                case 3:
+            	                    erreurRestantes = 5;  // Difficile
+            	                    break;
+            	            }
+            	        } else if (choix == JOptionPane.NO_OPTION) {
+            	            reinitialiseJeu();
+            	            // Réinitialisez le compteur d'erreurs en fonction du niveau actuel
+            	           // erreurRestantes = (erreurRestantes == 0) ?  : (erreurRestantes == -5) ? 10 : 5;
+            	        }
+            	    }
+            	}
+ 
+         /*TEST_FIN*/    
+         
                
-             
+               
+         /*TEST_FIN*/              
            break;
            }
           }
+      
       if(verif(M,CopieM)) JOptionPane.showMessageDialog(f,"Bravo!! vous avez gagné ");						  // Si toutes les valeurs sont correctes, on affiche un message de victoire
-      }
+      
+    
+    }
       
     }

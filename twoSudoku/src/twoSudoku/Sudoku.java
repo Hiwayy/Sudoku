@@ -294,6 +294,7 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
     				M[i][j].setText("");
         			M[i][j].setForeground(Color.black);
         			M[i][j].setEditable(true);
+        			
     			}
     		}
     	}
@@ -414,13 +415,13 @@ new Sudoku();								    // création d'une nouvelle instance de la classe Sudok
             	            // Réinitialisez le compteur d'erreurs pour le niveau actuel
             	            switch (difficulte) {
             	                case 1:
-            	                    erreurRestantes = 20; // Facile
+            	                    erreurRestantes = 5; // Facile
             	                    break;
             	                case 2:
             	                    erreurRestantes = 10; // Moyen
             	                    break;
             	                case 3:
-            	                    erreurRestantes = 5;  // Difficile
+            	                    erreurRestantes = 20;  // Difficile
             	                    break;
             	            }
             	        } else if (choix == JOptionPane.NO_OPTION) {

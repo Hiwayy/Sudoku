@@ -22,6 +22,9 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
  /*TEST*/
 	private int erreurRestantes;
 	private int difficulte;
+	/*TEST_NIVEAU_SPECIAL*/
+	private int carreValide = 0;
+	/*FIN_TEST*/
 /*FIN TEST*/
 	public static JFrame f = new JFrame("Sudoku");					// Création d'une fenêtre avec le titre "Sudoku"
     public static JPanel p = new JPanel();							// Création d'un panneau
@@ -32,6 +35,10 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
     JMenuItem n1 = new JMenuItem("facile");							// Création d'un élément de menu "facile"
     JMenuItem n2 = new JMenuItem("Moyen");							// Création d'un élément de menu "Moyen"
     JMenuItem n3 = new JMenuItem("dificile");						// Création d'un élément de menu "difficile"
+    /*TEST_NEW_NIVEAU*/
+    JMenuItem n4 = new JMenuItem("Special");
+    /*FIN_TEST_NEW_NIVEAU*/
+    
     /*AVOIR SI LAISSE*/		Font font = new Font("Lucida Console", Font.BOLD,28);			// Création d'une police de caractère pour les cellules du sudoku
     
     public static void colorier(JTextField[][]M){					// Définition de la méthode "colorier" prenant en paramètre un tableau de champs de texte
@@ -200,7 +207,7 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
      }
      }
      
-     public static void ValiderCarre3X3(JTextField[][]K,JTextField[][]L,int line,int col){
+     public void ValiderCarre3X3(JTextField[][]K,JTextField[][]L,int line,int col){
          int l=0;int c =0;boolean valide=true;int ligne, colonne;								// Initialisation des indices pour parcourir la case 3x3 correspondant à la ligne et colonne données
       switch(line){																				//commence le premier switch sur la variable "line"
           case 0:case 1: case 2:{																 //si line est 0, 1, ou 2, exécute ce bloc de code
@@ -224,7 +231,7 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
                          case 6:case 7: case 8:{ l=6;c=6;break;} 								//si col est 6, 7, ou 8, fixe l=6 et c=6 et sort du switch
               }break;
           }
-      } 
+      }
       for (int i = 0; i<9;i++){																	// Vérification de chaque case dans la case 3x3 correspondant à la ligne et colonne données
           ligne=(i/3)+l;
           colonne = (i%3)+c;
@@ -239,6 +246,11 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
             K[ligne][colonne].setEditable(false);
       }
      }
+    /*TEST_NIVEAU_SPECIAL*/ 
+      if (valide == true) {
+    	  carreValide++;
+      }
+     /*TEST_FIN*/    
      }
      
      public static boolean verif(JTextField[][]K,JTextField[][]L){
@@ -278,6 +290,13 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
     	     difficulte = 2;
     	     erreurRestantes = 10;
     	}
+    	else if (difficulte == 4) {
+    		colorier(M);
+    		generer(M, 15, 5);
+    		
+    		difficulte = 4;
+    		erreurRestantes = 15;
+    	}
     	else {
     	     colorier(M);
     	     generer(M,40,15);
@@ -294,16 +313,36 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
     				M[i][j].setText("");
         			M[i][j].setForeground(Color.black);
         			M[i][j].setEditable(true);
+        			
     			}
     		}
     	}
     	
     }
     
-/*TEST_FIN*/     
+    
+    public void inverserChiffres(JTextField[][] K) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                String text = K[i][j].getText();
+                if (!text.isEmpty()) {
+                    int inverted = 10 - Integer.parseInt(text);
+                    K[i][j].setText(Integer.toString(inverted));
+                }
+            }
+        }
+    }
+    
+    public void cacherCarré() 
+    {
+    	
+    }
+
+/*TEST_FIN*/   
+    
     Sudoku(){	
       f.setSize(600,600);												//Creation de la fenetre princiaple
-      menu.add(n1);menu.add(n2);menu.add(n3);							 // Création du menu et des options de difficulté
+      menu.add(n1);menu.add(n2);menu.add(n3);menu.add(n4);							 // Création du menu et des options de difficulté
       mb.add(menu);
       f.setJMenuBar(mb);												
       p.setVisible(false);												 // Configuration de la grille de jeu
@@ -361,6 +400,18 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
      erreurRestantes = 20;
     }   
     });
+    /*TEST_NEW_NIVEAU*/
+      n4.addActionListener(new ActionListener(){
+     @Override
+    public void actionPerformed(ActionEvent e) {
+     colorier(M);
+     generer(M, 15, 5);
+     
+     difficulte = 4;
+     erreurRestantes = 500;
+    }   
+    });
+    /*FIN_TEST_NEW_NIVEAU*/  
     }
     
     
@@ -377,7 +428,9 @@ new Sudoku();								    // création d'une nouvelle instance de la classe Sudok
 
     @Override
     public void keyPressed(KeyEvent e) {
-       
+        if (carreValide >= 2 && difficulte == 4) {
+            inverserChiffres(M);
+        }
     }
 
     @Override
@@ -414,19 +467,21 @@ new Sudoku();								    // création d'une nouvelle instance de la classe Sudok
             	            // Réinitialisez le compteur d'erreurs pour le niveau actuel
             	            switch (difficulte) {
             	                case 1:
-            	                    erreurRestantes = 20; // Facile
+            	                    erreurRestantes = 5; // Facile
             	                    break;
             	                case 2:
             	                    erreurRestantes = 10; // Moyen
             	                    break;
             	                case 3:
-            	                    erreurRestantes = 5;  // Difficile
+            	                    erreurRestantes = 20;  // Difficile
             	                    break;
+            	                case 4:
+            	                	erreurRestantes = 15; // Special
             	            }
             	        } else if (choix == JOptionPane.NO_OPTION) {
             	            reinitialiseJeu();
             	            // Réinitialisez le compteur d'erreurs en fonction du niveau actuel
-            	           // erreurRestantes = (erreurRestantes == 0) ?  : (erreurRestantes == -5) ? 10 : 5;
+            	           
             	        }
             	    }
             	}

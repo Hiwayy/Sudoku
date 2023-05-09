@@ -2,11 +2,16 @@ package twoSudoku;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+
 import static java.lang.Math.random;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -17,13 +22,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
-
 public class Sudoku implements KeyListener {						// Définition de la classe Sudoku qui implémente l'interface KeyListener
  /*TEST*/
 	private int erreurRestantes;
 	private int difficulte;
 	/*TEST_NIVEAU_SPECIAL*/
 	private int carreValide = 0;
+	private Font customFont;
 	/*FIN_TEST*/
 /*FIN TEST*/
 	public static JFrame f = new JFrame("Sudoku");					// Création d'une fenêtre avec le titre "Sudoku"
@@ -40,7 +45,7 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
     /*FIN_TEST_NEW_NIVEAU*/
     
     /*AVOIR SI LAISSE*/		Font font = new Font("Lucida Console", Font.BOLD,28);			// Création d'une police de caractère pour les cellules du sudoku
-    
+
     public static void colorier(JTextField[][]M){					// Définition de la méthode "colorier" prenant en paramètre un tableau de champs de texte
         int x,y;													// Déclaration des variables entières "x" et "y"
         for (x = 0;x<9;x++){										// Boucle for pour parcourir les lignes du tableau
@@ -324,14 +329,11 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
     public void inverserChiffres(JTextField[][] K) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                String text = K[i][j].getText();
-                if (!text.isEmpty()) {
-                    int inverted = 10 - Integer.parseInt(text);
-                    K[i][j].setText(Integer.toString(inverted));
-                }
+                K[i][j].setFont(customFont);
             }
         }
     }
+
     
     public void cacherCarré() 
     {
@@ -341,6 +343,7 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
 /*TEST_FIN*/   
     
     Sudoku(){	
+    	
       f.setSize(600,600);												//Creation de la fenetre princiaple
       menu.add(n1);menu.add(n2);menu.add(n3);menu.add(n4);							 // Création du menu et des options de difficulté
       mb.add(menu);
@@ -363,8 +366,15 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
       f.setVisible(true);
       f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
       f.setResizable(false);
-      
-      
+    /**/  
+      try {
+          URL fontUrl = getClass().getResource("/Sudoku-Regular.ttf");
+          customFont = Font.createFont(Font.TRUETYPE_FONT, fontUrl.openStream());
+          customFont = customFont.deriveFont(28f); // Vous pouvez changer la taille de la police ici
+      } catch (FontFormatException | IOException e) {
+          e.printStackTrace();
+      }
+    /**/  
    // Ajout des actions pour chaque option de difficulté
       
       n1.addActionListener(new ActionListener(){
@@ -412,6 +422,7 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
     }   
     });
     /*FIN_TEST_NEW_NIVEAU*/  
+      
     }
     
     

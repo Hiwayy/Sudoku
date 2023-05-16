@@ -348,104 +348,190 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
 
     }
 
-/*TEST_FIN*/   
+ 
     
-    Sudoku(){	
-    	
-      f.setSize(600,600);												//Creation de la fenetre princiaple
-      menu.add(n1);menu.add(n2);menu.add(n3);menu.add(n4);							 // Création du menu et des options de difficulté
-      mb.add(menu);mb.add(errors);
-      f.setJMenuBar(mb);												
-      p.setVisible(false);												 // Configuration de la grille de jeu
-      p.setLayout(new GridLayout(9,9));
-      for (int i = 0; i<9;i++){
-          for (int j = 0; j<9;j++){
-              M[i][j]= new JTextField();								  // Création des cases de la grille
-              M[i][j].setFont(font);
-              M[i][j].setForeground(Color.black);
-              M[i][j].setHorizontalAlignment(SwingConstants.CENTER);
-          /*a souvenir*/    M[i][j].addKeyListener(this);
-              p.add(M[i][j]);											// Ajout des cases à la grille
-          }
-      }
-      // Ajout de la grille à la fenêtre principale
-      f.setContentPane(p);
-      p.setVisible(false);
-      f.setVisible(true);
-      f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-      f.setResizable(false);
-    /**/  
-      try {
-          URL fontUrl = getClass().getResource("/Sudoku-Regular.ttf");
-          customFont = Font.createFont(Font.TRUETYPE_FONT, fontUrl.openStream());
-          customFont = customFont.deriveFont(28f); // Vous pouvez changer la taille de la police ici
-      } catch (FontFormatException | IOException e) {
-          e.printStackTrace();
-      }
-    /**/  
-   // Ajout des actions pour chaque option de difficulté
-      
-      n1.addActionListener(new ActionListener(){
-     @Override
-    public void actionPerformed(ActionEvent e) {
-     colorier(M);
-     generer(M,10,3);
-     
-     difficulte = 1;
-     erreurRestantes = 5;	
-      
-    }   
-    });
-      
-      n2.addActionListener(new ActionListener(){
-     @Override
-    public void actionPerformed(ActionEvent e) {
-     colorier(M);
-     generer(M,15,5);
-     
-     difficulte = 2;
-     erreurRestantes = 10;
-    }   
-    });
-      
-      n3.addActionListener(new ActionListener(){
-     @Override
-    public void actionPerformed(ActionEvent e) {
-     colorier(M);
-     generer(M,40,15);
-     
-     difficulte = 3;
-     erreurRestantes = 20;
-    }   
-    });
-    /*TEST_NEW_NIVEAU*/
-      n4.addActionListener(new ActionListener(){
-     @Override
-    public void actionPerformed(ActionEvent e) {
-     colorier(M);
-     generer(M, 15, 5);
-     
-     difficulte = 4;
-     erreurRestantes = 500;
-    }   
-    });
-    /*FIN_TEST_NEW_NIVEAU*/  
-      errors.addActionListener(new ActionListener() {
-  	    @Override
-  	    public void actionPerformed(ActionEvent e) {
-  	        JOptionPane.showMessageDialog(f, "Nombre d'erreurs restantes : " + erreurRestantes);
-  	        
-  	    }
-  	});  
-      
-    }
+//    public Sudoku(){	
+//    	
+//      f.setSize(600,600);												//Creation de la fenetre princiaple
+//      menu.add(n1);menu.add(n2);menu.add(n3);menu.add(n4);							 // Création du menu et des options de difficulté
+//      mb.add(menu);mb.add(errors);
+//      f.setJMenuBar(mb);												
+//      p.setVisible(false);												 // Configuration de la grille de jeu
+//      p.setLayout(new GridLayout(9,9));
+//      for (int i = 0; i<9;i++){
+//          for (int j = 0; j<9;j++){
+//              M[i][j]= new JTextField();								  // Création des cases de la grille
+//              M[i][j].setFont(font);
+//              M[i][j].setForeground(Color.black);
+//              M[i][j].setHorizontalAlignment(SwingConstants.CENTER);
+//          /*a souvenir*/    M[i][j].addKeyListener(this);
+//              p.add(M[i][j]);											// Ajout des cases à la grille
+//          }
+//      }
+//      // Ajout de la grille à la fenêtre principale
+//      f.setContentPane(p);
+//      p.setVisible(false);
+//      f.setVisible(true);
+//      f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//      f.setResizable(false);
+//    
+//      try {
+//          URL fontUrl = getClass().getResource("/Sudoku-Regular.ttf");
+//          customFont = Font.createFont(Font.TRUETYPE_FONT, fontUrl.openStream());
+//          customFont = customFont.deriveFont(28f); // Vous pouvez changer la taille de la police ici
+//      } catch (FontFormatException | IOException e) {
+//          e.printStackTrace();
+//      }
+//    
+//   // Ajout des actions pour chaque option de difficulté
+//      
+//      n1.addActionListener(new ActionListener(){
+//     @Override
+//    public void actionPerformed(ActionEvent e) {
+//     colorier(M);
+//     generer(M,10,3);
+//     
+//     difficulte = 1;
+//     erreurRestantes = 5;	
+//      
+//    }   
+//    });
+//      
+//      n2.addActionListener(new ActionListener(){
+//     @Override
+//    public void actionPerformed(ActionEvent e) {
+//     colorier(M);
+//     generer(M,15,5);
+//     
+//     difficulte = 2;
+//     erreurRestantes = 10;
+//    }   
+//    });
+//      
+//      n3.addActionListener(new ActionListener(){
+//     @Override
+//    public void actionPerformed(ActionEvent e) {
+//     colorier(M);
+//     generer(M,40,15);
+//     
+//     difficulte = 3;
+//     erreurRestantes = 20;
+//    }   
+//    });
+//   
+//      n4.addActionListener(new ActionListener(){
+//     @Override
+//    public void actionPerformed(ActionEvent e) {
+//     colorier(M);
+//     generer(M, 15, 5);
+//     
+//     difficulte = 4;
+//     erreurRestantes = 500;
+//    }   
+//    });
+//   
+//      errors.addActionListener(new ActionListener() {
+//  	    @Override
+//  	    public void actionPerformed(ActionEvent e) {
+//  	        JOptionPane.showMessageDialog(f, "Nombre d'erreurs restantes : " + erreurRestantes);
+//  	        
+//  	    }
+//  	});  
+//      
+//    } 
     
+    public void DebutJeu(int userId) {
+        f.setSize(600,600);												//Creation de la fenetre princiaple
+        menu.add(n1);menu.add(n2);menu.add(n3);menu.add(n4);							 // Création du menu et des options de difficulté
+        mb.add(menu);mb.add(errors);
+        f.setJMenuBar(mb);												
+        p.setVisible(false);												 // Configuration de la grille de jeu
+        p.setLayout(new GridLayout(9,9));
+        for (int i = 0; i<9;i++){
+            for (int j = 0; j<9;j++){
+                M[i][j]= new JTextField();								  // Création des cases de la grille
+                M[i][j].setFont(font);
+                M[i][j].setForeground(Color.black);
+                M[i][j].setHorizontalAlignment(SwingConstants.CENTER);
+            /*a souvenir*/    M[i][j].addKeyListener(this);
+                p.add(M[i][j]);											// Ajout des cases à la grille
+            }
+        }
+        // Ajout de la grille à la fenêtre principale
+        f.setContentPane(p);
+        p.setVisible(false);
+        f.setVisible(true);
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        f.setResizable(false);
+      /**/  
+        try {
+            URL fontUrl = getClass().getResource("/Sudoku-Regular.ttf");
+            customFont = Font.createFont(Font.TRUETYPE_FONT, fontUrl.openStream());
+            customFont = customFont.deriveFont(28f); // Vous pouvez changer la taille de la police ici
+        } catch (FontFormatException | IOException e) {
+            e.printStackTrace();
+        }
+      /**/  
+     // Ajout des actions pour chaque option de difficulté
+        
+        n1.addActionListener(new ActionListener(){
+       @Override
+      public void actionPerformed(ActionEvent e) {
+       colorier(M);
+       generer(M,10,3);
+       
+       difficulte = 1;
+       erreurRestantes = 5;	
+        
+      }   
+      });
+        
+        n2.addActionListener(new ActionListener(){
+       @Override
+      public void actionPerformed(ActionEvent e) {
+       colorier(M);
+       generer(M,15,5);
+       
+       difficulte = 2;
+       erreurRestantes = 10;
+      }   
+      });
+        
+        n3.addActionListener(new ActionListener(){
+       @Override
+      public void actionPerformed(ActionEvent e) {
+       colorier(M);
+       generer(M,40,15);
+       
+       difficulte = 3;
+       erreurRestantes = 20;
+      }   
+      });
+      /*TEST_NEW_NIVEAU*/
+        n4.addActionListener(new ActionListener(){
+       @Override
+      public void actionPerformed(ActionEvent e) {
+       colorier(M);
+       generer(M, 15, 5);
+       
+       difficulte = 4;
+       erreurRestantes = 500;
+      }   
+      });
+      /*FIN_TEST_NEW_NIVEAU*/  
+        errors.addActionListener(new ActionListener() {
+    	    @Override
+    	    public void actionPerformed(ActionEvent e) {
+    	        JOptionPane.showMessageDialog(f, "Nombre d'erreurs restantes : " + erreurRestantes);
+    	        
+    	    }
+    	});  
+        
+      }
     
     
 
-public static void main(String[]args){
-new Sudoku();								    // création d'une nouvelle instance de la classe Sudoku
-}
+
 
     @Override
     public void keyTyped(KeyEvent e) {

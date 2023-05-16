@@ -1,7 +1,5 @@
 package BDD;
 
-import BDD.Main;
-
 import java.awt.EventQueue;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,41 +13,60 @@ import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
+import twoSudoku.Sudoku;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Profils {
+	
+	public  JPanel panel = new JPanel();
     private JFrame frame;
+    private Sudoku sudokuGame;
     private JList<String> userList;
     private DefaultListModel<String> listModel;
     private JButton createButton;
     private JButton deleteButton;
 
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    Profils window = new Profils();
-                    window.frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 
-    public Profils() {
+
+    @SuppressWarnings("static-access")
+	public Profils() {
         initialize();
         populateUserList();
+        
+        this.sudokuGame = new Sudoku();		// Instanciez Sudoku ici
+        
+        //ajout du bouton jouer
+        JButton startGameButton = new JButton("Jouer");
+        startGameButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+            	startGame();
+            }
+        });
+        panel.add(startGameButton);
+        }
+        
+    public void startGame() {
+        String selectedUser = userList.getSelectedValue();
+        if (selectedUser == null) {
+            JOptionPane.showMessageDialog(frame, "Veuillez sélectionner un utilisateur pour commencer le jeu.");
+            return;
+        }
+        int userId = Integer.parseInt(selectedUser.split(":")[0].trim());
+        sudokuGame.DebutJeu(userId); // Suppose que la méthode startGame() de Sudoku prend l'ID utilisateur en argument
     }
+
     
+    public void startInterface() {
+    	this.frame.setVisible(true);
+    }
 
     private void initialize() {
         frame = new JFrame();
         frame.setBounds(100, 100, 400, 300);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        JPanel panel = new JPanel();
         frame.getContentPane().add(panel);
 
         userList = new JList<String>();
@@ -76,10 +93,15 @@ public class Profils {
 
     private void populateUserList() {
         // Vos informations de connexion à une base de données
+        String BDD = "sudoku";
+        String url = "jdbc:mysql://localhost:3306/" + BDD;
+        String user = "root";
+        String passwd = "";
+
         try {
-        	 Connection conn = BDD.Main.getConnection();
-             System.out.println("Connecté");
             Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(url, user, passwd);
+            System.out.println("Connecté");
 
             String query = "SELECT Player_id, Name FROM player";
             PreparedStatement statement = conn.prepareStatement(query);
@@ -87,8 +109,9 @@ public class Profils {
 
             listModel = new DefaultListModel<String>();
             while (resultSet.next()) {
+                int playerId = resultSet.getInt("Player_id");
                 String name = resultSet.getString("Name");
-                String profile = name;
+                String profile = playerId + ": " + name;
                 listModel.addElement(profile);
             }
             userList.setModel(listModel);
@@ -103,11 +126,14 @@ public class Profils {
 
     private void createUser() {
         // Vos informations de connexion à la base de données
+        String BDD = "sudoku";
+        String url = "jdbc:mysql://localhost:3306/" + BDD;
+        String user = "root";
+        String passwd = "";
 
         try {
-        	 Connection conn = BDD.Main.getConnection();
-
             Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(url, user, passwd);
 
             // Obtenir le nom d'utilisateur pour le nouvel utilisateur (par exemple, à partir d'un champ de texte)
             String username = JOptionPane.showInputDialog(frame, "Nom d'utilisateur :");
@@ -136,9 +162,14 @@ public class Profils {
 
     private void deleteUser() {
         // Vos informations de connexion à la base de données
+        String BDD = "sudoku";
+        String url = "jdbc:mysql://localhost:3306/" + BDD;
+        String user = "root";
+        String passwd = "";
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = BDD.Main.getConnection();
+            Connection conn = DriverManager.getConnection(url, user, passwd);
 
             // Obtenir l'utilisateur sélectionné dans la liste
             String selectedUser = userList.getSelectedValue();

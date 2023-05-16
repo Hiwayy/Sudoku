@@ -1,16 +1,15 @@
 package Gamefinal;
 
-import BDD.*;
-import twoSudoku.*;
+import BDD.Profils;
+
 
 public class Gamefinal {
 
-    @SuppressWarnings("static-access")
-	public static void main(String[] args) {
-        Profils profils1 = new Profils();
-        Sudoku sudoku1 = new Sudoku();
+    public static void main(String[] args) {
+    	Profils profils1 = new Profils();
 
-        profils1.main(args);
-        sudoku1.main(args);
+    	
+    	profils1.startInterface();
+
     }
 }

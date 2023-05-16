@@ -1,5 +1,6 @@
 package twoSudoku;
 
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -342,7 +343,7 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
 
 /*TEST_FIN*/   
     
-    Sudoku(){	
+   public Sudoku(){	
     	
       f.setSize(600,600);												//Creation de la fenetre princiaple
       menu.add(n1);menu.add(n2);menu.add(n3);menu.add(n4);							 // Création du menu et des options de difficulté

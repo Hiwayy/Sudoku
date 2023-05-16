@@ -20,6 +20,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import BDD.Profils;
+
 public class Sudoku implements KeyListener {						// Définition de la classe Sudoku qui implémente l'interface KeyListener
  /*TEST*/
 	private int erreurRestantes;
@@ -27,8 +29,10 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
 	/*TEST_NIVEAU_SPECIAL*/
 	private int carreValide = 0;
 	private Font customFont;
-	private int Victoire;
-	private int Defaite;
+	public int Victoire;
+	public int Defaite;
+	public int Player_id;
+
 	
 	/*FIN_TEST*/
 /*FIN TEST*/
@@ -45,7 +49,7 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
     JMenuItem n4 = new JMenuItem("Special");
     /*FIN_TEST_NEW_NIVEAU*/
     JMenuItem errors = new JMenuItem("                                                                                                                         Nbr erreur : " + erreurRestantes);
-
+  //  Profils profils1 = new Profils();
     
     /*AVOIR SI LAISSE*/		Font font = new Font("Lucida Console", Font.BOLD,28);			// Création d'une police de caractère pour les cellules du sudoku
 
@@ -68,6 +72,7 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
         }
     }
     }
+    
     
     public static void initialiser(JTextField[][]K){				// Définition de la fonction initialiser prenant en entrée un tableau de JTextField
     int i;int j;int ligne;int colonne;int v;						// Déclaration de l'indice de la boucle de la première étape, de la seconde étape
@@ -440,7 +445,7 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
 //      
 //    } 
     
-    public void DebutJeu(int userId) {
+    public void DebutJeu(int Player_id) {
         f.setSize(600,600);												//Creation de la fenetre princiaple
         menu.add(n1);menu.add(n2);menu.add(n3);menu.add(n4);							 // Création du menu et des options de difficulté
         mb.add(menu);mb.add(errors);
@@ -515,7 +520,7 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
        generer(M, 15, 5);
        
        difficulte = 4;
-       erreurRestantes = 500;
+       erreurRestantes = 25;
       }   
       });
       /*FIN_TEST_NEW_NIVEAU*/  
@@ -525,8 +530,10 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
     	        JOptionPane.showMessageDialog(f, "Nombre d'erreurs restantes : " + erreurRestantes);
     	        
     	    }
-    	});  
+    	    
         
+        });  
+        this.Player_id = Player_id;  
       }
     
     
@@ -544,9 +551,13 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
             inverserChiffres(M);
         }
     }
+    
+    
 
     @Override
     public void keyReleased(KeyEvent e) {
+    	@SuppressWarnings("unused") 
+    	Profils profils1 = new Profils();
         int v=0;int v1=0;
       JTextField tf = (JTextField) e.getSource();										    // On récupère le composant qui a généré l'événement
       tf.setFont(new Font("Arial Black",Font.BOLD,28));
@@ -575,6 +586,8 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
             	        int choix = JOptionPane.showOptionDialog(f, "Désolé, vous avez atteint le nombre maximum d'erreurs autorisées. Voulez-vous recommencer ou réinitialiser le jeu ?", "Fin du jeu", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, new Object[]{"Recommencer", "Réinitialiser"}, null);
             	        
             	        Defaite++;
+            	        profils1.insertGameResult(Player_id, Victoire, Defaite);
+
             	        
             	        if (choix == JOptionPane.YES_OPTION) {
             	            recommencer();
@@ -615,6 +628,8 @@ public class Sudoku implements KeyListener {						// Définition de la classe Su
       if(verif(M,CopieM)) {
     	  JOptionPane.showMessageDialog(f,"Bravo!! vous avez gagné ");
     	  Victoire++;
+    	 profils1.insertGameResult(Player_id, Victoire, Defaite);
+
       };
 						  // Si toutes les valeurs sont correctes, on affiche un message de victoire
       

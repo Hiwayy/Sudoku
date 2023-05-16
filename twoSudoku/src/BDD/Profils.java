@@ -1,5 +1,7 @@
 package BDD;
 
+import BDD.Main;
+
 import java.awt.EventQueue;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -74,15 +76,10 @@ public class Profils {
 
     private void populateUserList() {
         // Vos informations de connexion à une base de données
-        String BDD = "sudoku";
-        String url = "jdbc:mysql://localhost:3306/" + BDD;
-        String user = "root";
-        String passwd = "";
-
         try {
+        	 Connection conn = BDD.Main.getConnection();
+             System.out.println("Connecté");
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(url, user, passwd);
-            System.out.println("Connecté");
 
             String query = "SELECT Player_id, Name FROM player";
             PreparedStatement statement = conn.prepareStatement(query);
@@ -90,9 +87,8 @@ public class Profils {
 
             listModel = new DefaultListModel<String>();
             while (resultSet.next()) {
-                int playerId = resultSet.getInt("Player_id");
                 String name = resultSet.getString("Name");
-                String profile = playerId + ": " + name;
+                String profile = name;
                 listModel.addElement(profile);
             }
             userList.setModel(listModel);
@@ -107,14 +103,11 @@ public class Profils {
 
     private void createUser() {
         // Vos informations de connexion à la base de données
-        String BDD = "sudoku";
-        String url = "jdbc:mysql://localhost:3306/" + BDD;
-        String user = "root";
-        String passwd = "";
 
         try {
+        	 Connection conn = BDD.Main.getConnection();
+
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(url, user, passwd);
 
             // Obtenir le nom d'utilisateur pour le nouvel utilisateur (par exemple, à partir d'un champ de texte)
             String username = JOptionPane.showInputDialog(frame, "Nom d'utilisateur :");
@@ -143,14 +136,9 @@ public class Profils {
 
     private void deleteUser() {
         // Vos informations de connexion à la base de données
-        String BDD = "sudoku";
-        String url = "jdbc:mysql://localhost:3306/" + BDD;
-        String user = "root";
-        String passwd = "";
-
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection conn = DriverManager.getConnection(url, user, passwd);
+            Connection conn = BDD.Main.getConnection();
 
             // Obtenir l'utilisateur sélectionné dans la liste
             String selectedUser = userList.getSelectedValue();

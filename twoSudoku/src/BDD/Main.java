@@ -1,32 +1,28 @@
 package BDD;
 
-import java.awt.EventQueue;
 import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class Main {
-    // La méthode qui appelera votre fonction Run
+    // Vos informations de connexion à une base de données
+    private static String BDD = "sudoku";
+    private static String url = "jdbc:mysql://localhost:3306/" + BDD;
+    private static String user = "root";
+    private static String passwd = "";
+
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                // Votre fonction Run
-                // Vos information de connexion à une base de données
-                String BDD = "sudoku";
-                String url = "jdbc:mysql://localhost:3306/" + BDD;
-                String user = "root";
-                String passwd = "";
-                // L'essaie de connexion à votre base de donées
-                try {
-                    Class.forName("com.mysql.cj.jdbc.Driver");
-                    Connection conn = DriverManager.getConnection(url, user, passwd);
-                    System.out.println("Connecter");
-                } catch (Exception e){
-                    e.printStackTrace();
-                    System.out.println("Erreur");
-                    System.exit(0);
-                }
-            }
-        });
+        try {
+            Connection conn = getConnection();
+            System.out.println("Connecté");
+        } catch (Exception e){
+            e.printStackTrace();
+            System.out.println("Erreur");
+            System.exit(0);
+        }
     }
 
+    public static Connection getConnection() throws Exception {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        return DriverManager.getConnection(url, user, passwd);
+    }
 }

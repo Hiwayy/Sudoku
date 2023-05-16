@@ -87,9 +87,8 @@ public class Profils {
 
             listModel = new DefaultListModel<String>();
             while (resultSet.next()) {
-                int playerId = resultSet.getInt("Player_id");
                 String name = resultSet.getString("Name");
-                String profile = playerId + ": " + name;
+                String profile = name;
                 listModel.addElement(profile);
             }
             userList.setModel(listModel);
